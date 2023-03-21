@@ -8,6 +8,7 @@ import haxepunk.math.*;
 import haxepunk.Tween;
 import haxepunk.tweens.misc.*;
 import scenes.*;
+import entities.Bullet;
 
 class Player extends Entity
 {
@@ -18,6 +19,9 @@ class Player extends Entity
     public static inline var MAX_DRIFT_BOOST_DURATION = 1;
     public static inline var SOFT_CLAMP_APPROACH_SPEED = ACCEL * 1.75;
 
+    public static inline var TURRET_TURN_SPEED = 100 * 3 / 1.75;
+    public static inline var SHOT_SPEED = 150;
+
     public static var sfx:Map<String, Sfx> = null;
 
     private var sprite:Spritemap;
@@ -27,6 +31,9 @@ class Player extends Entity
     private var isDrifting:Bool;
     private var velocity:Vector2;
     private var driftTimer:Float;
+
+    private var turretAngle:Float;
+    private var turretSprite:Image;
 
     public function new(x:Float, y:Float) {
         super(x, y);
@@ -43,12 +50,21 @@ class Player extends Entity
             5, -8
         ]);
         mask = hitbox;
-        graphic = sprite;
         angle = 0;
         speed = 0;
         velocity = new Vector2();
         driftTimer = 0;
         isDrifting = false;
+
+        turretAngle = 0;
+        turretSprite = new Image("graphics/turret.png");
+        //turretSprite.x = width / 2;
+        //turretSprite.y = height / 2;
+        turretSprite.originX = turretSprite.width / 2;
+        turretSprite.originY = turretSprite.height;
+
+        graphic = new Graphiclist([sprite, turretSprite]);
+
         if(sfx == null) {
             sfx = [
                 "die" => new Sfx("audio/die.wav"),
@@ -62,8 +78,38 @@ class Player extends Entity
     override public function update() {
         movement();
         //collisions();
+        combat();
         animation();
         super.update();
+    }
+
+    private function combat() {
+        if(Input.check("turret_left")) {
+            turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
+        }
+        if(Input.check("turret_right")) {
+            turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
+        }
+        if(Input.pressed("fire")) {
+            shoot({
+                radius: 2,
+                angle: getShotAngleInRadians(),
+                speed: SHOT_SPEED,
+                color: 0xFFF7AB,
+                collidesWithWalls: true
+            });
+        }
+    }
+
+    private function shoot(bulletOptions:BulletOptions) {
+        var turretLength = new Vector2(0, turretSprite.height);
+        turretLength.rotate(getShotAngleInRadians());
+        var bullet = new Bullet(centerX - turretLength.x, centerY - turretLength.y, bulletOptions);
+        scene.add(bullet);
+    }
+
+    private function getShotAngleInRadians() {
+        return (angle + turretAngle) * 0.0174533 * -1;
     }
 
     private function movement() {
@@ -139,6 +185,8 @@ class Player extends Entity
     private function animation() {
         sprite.play(isDrifting ? "drifting" : "idle");
         sprite.angle = angle;
+        turretSprite.angle = angle + turretAngle;
+        //turretSprite.angle = turretAngle;
     }
 
     //private function collisions() {

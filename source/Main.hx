@@ -15,6 +15,8 @@ class Main extends Engine
     public static inline var GAMEPAD_RIGHT_TRIGGER_AXIS = 5;
     public static inline var GAMEPAD_LEFT_BUMPER = 9;
     public static inline var GAMEPAD_RIGHT_BUMPER = 10;
+    public static inline var GAMEPAD_RIGHT_ANALOG_X_AXIS = 2;
+    public static inline var GAMEPAD_RIGHT_ANALOG_Y_AXIS = 3;
 
     static function main() {
         new Main();
@@ -49,11 +51,14 @@ class Main extends Engine
         gamepad.defineButton("reverse", [XboxGamepad.DPAD_DOWN]);
         gamepad.defineButton("left", [XboxGamepad.DPAD_LEFT]);
         gamepad.defineButton("right", [XboxGamepad.DPAD_RIGHT]);
-        gamepad.defineButton("drift", [XboxGamepad.A_BUTTON, GAMEPAD_RIGHT_BUMPER]);
+        gamepad.defineButton("drift", [XboxGamepad.A_BUTTON, GAMEPAD_LEFT_BUMPER]);
+        gamepad.defineButton("fire", [XboxGamepad.X_BUTTON, GAMEPAD_RIGHT_BUMPER]);
         gamepad.defineAxis("forward", GAMEPAD_RIGHT_TRIGGER_AXIS, 0.5, 1);
         gamepad.defineAxis("reverse", GAMEPAD_LEFT_TRIGGER_AXIS, 0.5, 1);
         gamepad.defineAxis("left", XboxGamepad.LEFT_ANALOGUE_X, -0.5, -1);
         gamepad.defineAxis("right", XboxGamepad.LEFT_ANALOGUE_X, 0.5, 1);
+        gamepad.defineAxis("turret_left", GAMEPAD_RIGHT_ANALOG_X_AXIS, -0.5, -1);
+        gamepad.defineAxis("turret_right", GAMEPAD_RIGHT_ANALOG_X_AXIS, 0.5, 1);
     }
 
     override public function update() {
