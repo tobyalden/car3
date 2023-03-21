@@ -11,9 +11,9 @@ import scenes.*;
 
 class Player extends Entity
 {
-    public static inline var ACCEL = 50 * 8;
-    public static inline var MAX_SPEED = 100 * 2;
-    public static inline var TURN_SPEED = 100 * 3;
+    public static inline var ACCEL = 50 * 8 / 1.75;
+    public static inline var MAX_SPEED = 100 * 2 / 1.75;
+    public static inline var TURN_SPEED = 100 * 3 / 1.75;
     public static inline var POST_DRIFT_BOOST = 3;
     public static inline var MAX_DRIFT_BOOST_DURATION = 1;
     public static inline var SOFT_CLAMP_APPROACH_SPEED = ACCEL * 1.75;
