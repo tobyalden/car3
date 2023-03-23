@@ -23,6 +23,7 @@ class Player extends Entity
     public static inline var TURRET_TURN_SPEED = 100 * 3 / 1.75;
     public static inline var SHOT_SPEED = 150;
     public static inline var MAX_SHOTS_ON_SCREEN = 3;
+    public static inline var TURRET_TURN_INCREMENT = 90;
 
     private var sfx:Map<String, Sfx>;
 
@@ -40,10 +41,13 @@ class Player extends Entity
     private var turretAngle:Float;
     private var turretSprite:Image;
 
+    public var carrying(default, null):Entity;
+
     public function new(x:Float, y:Float, id:Int) {
         super(x, y);
         this.id = id;
         name = "player";
+        type = "player";
         sprite = new Spritemap('graphics/player${id}.png', 10, 16);
         sprite.add("idle", [0]);
         sprite.add("drifting", [1]);
@@ -65,6 +69,8 @@ class Player extends Entity
         turretSprite.originX = turretSprite.width / 2;
         turretSprite.originY = turretSprite.height;
 
+        carrying = null;
+
         graphic = new Graphiclist([sprite, turretSprite]);
 
         sfx = [
@@ -83,6 +89,9 @@ class Player extends Entity
             collisions();
             combat();
         }
+        if(carrying != null) {
+            carrying.moveTo(centerX, centerY - carrying.height);
+        }
         animation();
         super.update();
     }
@@ -90,11 +99,11 @@ class Player extends Entity
     private function combat() {
         if(Input.pressed('player${id}_turret_left')) {
             //turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
-            turretAngle += 90;
+            turretAngle += TURRET_TURN_INCREMENT;
         }
         if(Input.pressed('player${id}_turret_right')) {
             //turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
-            turretAngle -= 90;
+            turretAngle -= TURRET_TURN_INCREMENT;
         }
         if(Input.pressed('player${id}_fire')) {
             if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN) {
@@ -213,6 +222,10 @@ class Player extends Entity
     }
 
     private function collisions() {
+        var flag = collide("flag", x, y);
+        if(flag != null && carrying == null && !cast(flag, Flag).isCarried()) {
+            carrying = flag;
+        }
         var bullet = collide("bullet", x, y);
         if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id) {
             die();
@@ -221,6 +234,7 @@ class Player extends Entity
 
     private function die() {
         isDead = true;
+        carrying = null;
         sfx["die"].play();
         explode();
         HXP.alarm(2, function() {
