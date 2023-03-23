@@ -12,6 +12,9 @@ import entities.Bullet;
 
 class Player extends Entity
 {
+    public static inline var RED_TEAM = 0;
+    public static inline var BLUE_TEAM = 1;
+
     public static inline var ACCEL = 50 * 8 / 1.75;
     public static inline var MAX_SPEED = 100 * 2 / 1.75;
     public static inline var MAX_REVERSE_SPEED = MAX_SPEED * 0.7;
@@ -49,6 +52,7 @@ class Player extends Entity
         name = "player";
         type = "player";
         sprite = new Spritemap('graphics/player${id}.png', 10, 16);
+        trace(id);
         sprite.add("idle", [0]);
         sprite.add("drifting", [1]);
         sprite.play("idle");
@@ -83,6 +87,15 @@ class Player extends Entity
         ];
     }
 
+    public function getTeam() {
+        if(id == 0 || id == 1) {
+            return RED_TEAM;
+        }
+        else {
+            return BLUE_TEAM;
+        }
+    }
+
     override public function update() {
         if(!isDead) {
             movement();
@@ -111,7 +124,7 @@ class Player extends Entity
                     radius: 6,
                     angle: getShotAngleInRadians(),
                     speed: SHOT_SPEED,
-                    color: 0xFFF7AB,
+                    color: getTeam() == RED_TEAM ? 0xFF0000 : 0x0000FF,
                     collidesWithWalls: true,
                     playerId: id
                 });
@@ -238,7 +251,7 @@ class Player extends Entity
         sfx["die"].play();
         explode();
         HXP.alarm(2, function() {
-            var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints;
+            var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
             var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
             moveTo(spawnPoint.x, spawnPoint.y);
             isDead = false;

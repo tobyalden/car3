@@ -17,7 +17,7 @@ class Main extends Engine
     public static inline var GAMEPAD_RIGHT_BUMPER = 10;
     public static inline var GAMEPAD_RIGHT_ANALOG_X_AXIS = 2;
     public static inline var GAMEPAD_RIGHT_ANALOG_Y_AXIS = 3;
-    public static inline var NUM_PLAYERS = 2;
+    public static inline var NUM_PLAYERS = 4;
 
     static function main() {
         new Main();

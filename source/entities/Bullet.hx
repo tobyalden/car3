@@ -104,9 +104,6 @@ class Bullet extends Entity
         else {
             moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed);
         }
-        if(collide("player", x, y) != null) {
-            trace('d');
-        }
         if(!collideRect(x, y, scene.camera.x, scene.camera.y, HXP.width, HXP.height)) {
             scene.remove(this);
         }
