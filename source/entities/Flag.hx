@@ -29,7 +29,7 @@ class Flag extends Entity
         HXP.scene.getType("base", bases);
         for(base in bases) {
             if(cast(base, Base).team == team) {
-                moveTo(base.centerX - width / 2, base.centerY - height / 2);
+                moveTo(base.centerX - Math.floor(width / 2), base.centerY - Math.floor(height / 2));
             }
         }
     }

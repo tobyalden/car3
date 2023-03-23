@@ -44,7 +44,7 @@ class Player extends Entity
     private var turretAngle:Float;
     private var turretSprite:Image;
 
-    public var carrying(default, null):Entity;
+    public var carrying(default, null):Flag;
 
     public function new(x:Float, y:Float, id:Int) {
         super(x, y);
@@ -235,6 +235,14 @@ class Player extends Entity
     }
 
     private function collisions() {
+        var base = collide("base", x, y);
+        if(base != null && cast(base, Base).team == getTeam()) {
+            if(carrying != null) {
+                cast(HXP.scene, GameScene).scorePoint(getTeam());
+                carrying.reset();
+                carrying = null;
+            }
+        }
         var flag = collide("flag", x, y);
         if(
             flag != null
@@ -245,7 +253,7 @@ class Player extends Entity
                 cast(flag, Flag).reset();
             }
             else {
-                carrying = flag;
+                carrying = cast(flag, Flag);
             }
         }
         var bullet = collide("bullet", x, y);
