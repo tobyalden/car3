@@ -38,6 +38,7 @@ class Bullet extends Entity
     public var duration:Float;
     // Wait... i should just be checking the bullet options instead of creating redundant variables
     public var bulletOptions:BulletOptions;
+    private var sfx:Map<String, Sfx>;
 
     public function new(x:Float, y:Float, bulletOptions:BulletOptions) {
         super(x - bulletOptions.radius, y - bulletOptions.radius);
@@ -68,6 +69,9 @@ class Bullet extends Entity
         velocity.x = Math.cos(angle);
         velocity.y = Math.sin(angle);
         velocity.normalize(speed);
+        sfx = [
+            "bullethit" => new Sfx("audio/bullethit.ogg")
+        ];
     }
 
     override public function moveCollideX(_:Entity) {
@@ -83,6 +87,7 @@ class Bullet extends Entity
     private function onCollision() {
         scene.remove(this);
         explode();
+        sfx["bullethit"].play();
     }
 
     override public function update() {

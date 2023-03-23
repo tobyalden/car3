@@ -70,6 +70,9 @@ class Main extends Engine
 
     override public function update() {
 #if desktop
+        if(Key.pressed(Key.F)) {
+            HXP.fullscreen = !HXP.fullscreen;
+        }
         if(Key.pressed(Key.ESCAPE)) {
             Sys.exit(0);
         }

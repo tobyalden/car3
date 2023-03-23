@@ -19,6 +19,8 @@ class GameScene extends Scene
     public static inline var GAME_HEIGHT = 360;
     public static inline var POINTS_TO_WIN = 3;
 
+    public static var sfx(default, null):Map<String, Sfx> = null;
+
     public var level(default, null):Level;
     public var gameIsOver(default, null):Bool;
     private var score:Map<Int, Int>;
@@ -58,15 +60,27 @@ class GameScene extends Scene
         gameStarted = false;
         gameIsOver = false;
         curtain.fadeOut(1);
+
+        if(sfx == null) {
+            sfx = [
+                "airhorn" => new Sfx("audio/airhorn.wav"),
+                "scorepoint" => new Sfx("audio/scorepoint.wav"),
+                "returnflag" => new Sfx("audio/returnflag.ogg"),
+                "pickupflag" => new Sfx("audio/pickupflag.wav"),
+                "ready" => new Sfx("audio/ready.ogg")
+            ];
+        }
     }
 
     private function startSequence() {
         gameStarted = true;
         HXP.alarm(1, function() {
             message.alpha = 1;
+            sfx["ready"].play();
         }, this);
         HXP.alarm(3, function() {
             message.text = "GO!";
+            sfx["airhorn"].play();
         }, this);
         HXP.alarm(4, function() {
             message.alpha = 0;
@@ -77,6 +91,7 @@ class GameScene extends Scene
     }
 
     public function scorePoint(team:Int) {
+        sfx["scorepoint"].play();
         score[team] += 1;
         if(score[team] == POINTS_TO_WIN) {
             for(player in players) {
@@ -95,6 +110,7 @@ class GameScene extends Scene
             return;
         }
         gameIsOver = true;
+        sfx["airhorn"].play();
         HXP.alarm(5, function() {
             curtain.fadeIn(1);
         }, this);

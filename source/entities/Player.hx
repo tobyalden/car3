@@ -88,8 +88,14 @@ class Player extends Entity
             "drift" => new Sfx("audio/drift.wav"),
             "boost" => new Sfx("audio/boost.wav"),
             "shoot" => new Sfx("audio/shoot.ogg"),
-            "turret" => new Sfx("audio/turret.wav")
+            "turret" => new Sfx("audio/turret.ogg"),
+            "respawn" => new Sfx("audio/respawn.wav")
         ];
+    }
+
+    public function stopSounds() {
+        sfx["carloop"].stop();
+        sfx["drift"].stop();
     }
 
     public function getTeam() {
@@ -118,10 +124,12 @@ class Player extends Entity
         if(Input.pressed('player${id}_turret_left')) {
             //turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
             turretAngle += TURRET_TURN_INCREMENT;
+            sfx["turret"].play(0.1);
         }
         if(Input.pressed('player${id}_turret_right')) {
             //turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
             turretAngle -= TURRET_TURN_INCREMENT;
+            sfx["turret"].play(0.1);
         }
         if(Input.pressed('player${id}_fire')) {
             if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN) {
@@ -154,7 +162,7 @@ class Player extends Entity
         turretLength.rotate(getShotAngleInRadians());
         var bullet = new Bullet(centerX - turretLength.x, centerY - turretLength.y, bulletOptions);
         scene.add(bullet);
-        sfx["shoot"].play();
+        sfx["shoot"].play(0.7);
     }
 
     private function getShotAngleInRadians() {
@@ -167,7 +175,7 @@ class Player extends Entity
             var driftBoost = Math.min(driftTimer, MAX_DRIFT_BOOST_DURATION) / MAX_DRIFT_BOOST_DURATION;
             speed *= (1 + driftBoost);
             sfx["boost"].play(driftBoost);
-            sfx["carloop"].volume = 1;
+            sfx["carloop"].volume = 0.5;
         }
         driftTimer = isDrifting ? driftTimer + HXP.elapsed : 0;
         var oldAngle = angle;
@@ -218,9 +226,9 @@ class Player extends Entity
         velocity.normalize(Math.abs(speed));
         moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed, "walls");
         if(!sfx["carloop"].playing) {
-            sfx["carloop"].loop();
+            sfx["carloop"].loop(0.5);
         }
-        sfx["carloop"].volume = Math.abs(speed) / MAX_SPEED * (isDrifting ? 0.25 : 1);
+        sfx["carloop"].volume = Math.abs(speed) / MAX_SPEED * (isDrifting ? 0.25 : 0.5);
         if(isDrifting) {
             if(!sfx["drift"].playing) {
                 sfx["drift"].loop();
@@ -260,10 +268,15 @@ class Player extends Entity
             && !cast(flag, Flag).isCarried()
         ) {
             if(cast(flag, Flag).team == getTeam()) {
+                var oldPosition = new Vector2(flag.x, flag.y);
                 cast(flag, Flag).reset();
+                if(oldPosition.x != flag.x || oldPosition.y != flag.y) {
+                    GameScene.sfx["returnflag"].play();
+                }
             }
             else {
                 carrying = cast(flag, Flag);
+                GameScene.sfx["pickupflag"].play();
             }
         }
         var bullet = collide("bullet", x, y);
@@ -278,6 +291,7 @@ class Player extends Entity
         carrying = null;
         sfx["die"].play();
         explode();
+        stopSounds();
         HXP.alarm(2, function() {
             if(!cast(HXP.scene, GameScene).gameIsOver) {
                 var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
@@ -285,6 +299,7 @@ class Player extends Entity
                 moveTo(spawnPoint.x, spawnPoint.y);
                 isDead = false;
                 isInvincible = true;
+                sfx["respawn"].play();
                 HXP.alarm(0.5, function() {
                     canMove = true;
                 }, this);
