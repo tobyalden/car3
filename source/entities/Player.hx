@@ -37,6 +37,7 @@ class Player extends Entity
     private var sprite:Spritemap;
     private var hitbox:Hitbox;
     private var angle:Float;
+    private var startAngle:Float;
     private var speed:Float;
     private var isDrifting:Bool;
     private var velocity:Vector2;
@@ -53,6 +54,7 @@ class Player extends Entity
         super(x, y);
         this.id = id;
         this.angle = angle;
+        startAngle = angle;
         name = "player";
         type = "player";
         sprite = new Spritemap('graphics/player${id}.png', 10, 16);
@@ -294,20 +296,26 @@ class Player extends Entity
         stopSounds();
         HXP.alarm(2, function() {
             if(!cast(HXP.scene, GameScene).gameIsOver) {
-                var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
-                var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
-                moveTo(spawnPoint.x, spawnPoint.y);
-                isDead = false;
-                isInvincible = true;
-                sfx["respawn"].play();
-                HXP.alarm(0.5, function() {
-                    canMove = true;
-                }, this);
-                HXP.alarm(INVINCIBLE_TIME_ON_RESPAWN, function() {
-                    isInvincible = false;
-                });
+                respawn();
             }
         }, this);
+    }
+
+    private function respawn() {
+        var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
+        var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
+        moveTo(spawnPoint.x, spawnPoint.y);
+        angle = startAngle;
+        turretAngle = 0;
+        isDead = false;
+        isInvincible = true;
+        sfx["respawn"].play();
+        HXP.alarm(0.5, function() {
+            canMove = true;
+        }, this);
+        HXP.alarm(INVINCIBLE_TIME_ON_RESPAWN, function() {
+            isInvincible = false;
+        });
     }
 
     private function explode() {
