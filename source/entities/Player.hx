@@ -24,6 +24,8 @@ class Player extends Entity
 
     public static var sfx:Map<String, Sfx> = null;
 
+    public var id(default, null):Int;
+
     private var sprite:Spritemap;
     private var hitbox:Polygon;
     private var angle:Float;
@@ -35,10 +37,11 @@ class Player extends Entity
     private var turretAngle:Float;
     private var turretSprite:Image;
 
-    public function new(x:Float, y:Float) {
+    public function new(x:Float, y:Float, id:Int) {
         super(x, y);
+        this.id = id;
         name = "player";
-        sprite = new Spritemap("graphics/player.png", 10, 16);
+        sprite = new Spritemap('graphics/player${id}.png', 10, 16);
         sprite.add("idle", [0]);
         sprite.add("drifting", [1]);
         sprite.play("idle");
@@ -84,13 +87,13 @@ class Player extends Entity
     }
 
     private function combat() {
-        if(Input.check("turret_left")) {
+        if(Input.check('player${id}_turret_left')) {
             turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
         }
-        if(Input.check("turret_right")) {
+        if(Input.check('player${id}_turret_right')) {
             turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
         }
-        if(Input.pressed("fire")) {
+        if(Input.pressed('player${id}_fire')) {
             shoot({
                 radius: 2,
                 angle: getShotAngleInRadians(),
@@ -113,7 +116,7 @@ class Player extends Entity
     }
 
     private function movement() {
-        isDrifting = Input.check("drift");
+        isDrifting = Input.check('player${id}_drift');
         if(!isDrifting && driftTimer > 0) {
             var driftBoost = Math.min(driftTimer, MAX_DRIFT_BOOST_DURATION) / MAX_DRIFT_BOOST_DURATION;
             speed *= (1 + driftBoost);
@@ -123,16 +126,16 @@ class Player extends Entity
         driftTimer = isDrifting ? driftTimer + HXP.elapsed : 0;
         var oldAngle = angle;
         var turnSpeed = isDrifting ? TURN_SPEED * 1.35 : TURN_SPEED;
-        if(Input.check("left")) {
+        if(Input.check('player${id}_left')) {
             angle += turnSpeed * HXP.elapsed;
         }
-        if(Input.check("right")) {
+        if(Input.check('player${id}_right')) {
             angle -= turnSpeed * HXP.elapsed;
         }
-        if(Input.check("forward")) {
+        if(Input.check('player${id}_forward')) {
             speed += ACCEL * HXP.elapsed;
         }
-        else if(Input.check("reverse")) {
+        else if(Input.check('player${id}_reverse')) {
             speed -= ACCEL * HXP.elapsed;
         }
         else {
