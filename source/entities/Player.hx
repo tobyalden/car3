@@ -27,7 +27,7 @@ class Player extends Entity
     public var id(default, null):Int;
 
     private var sprite:Spritemap;
-    private var hitbox:Polygon;
+    private var hitbox:Hitbox;
     private var angle:Float;
     private var speed:Float;
     private var isDrifting:Bool;
@@ -46,12 +46,7 @@ class Player extends Entity
         sprite.add("drifting", [1]);
         sprite.play("idle");
         sprite.centerOrigin();
-        hitbox = Polygon.createFromArray([
-            -5, -8,
-            -5, 8,
-            5, 8,
-            5, -8
-        ]);
+        hitbox = new Hitbox(10, 10, -5, -5);
         mask = hitbox;
         angle = 0;
         speed = 0;
@@ -80,7 +75,7 @@ class Player extends Entity
 
     override public function update() {
         movement();
-        //collisions();
+        collisions();
         combat();
         animation();
         super.update();
@@ -95,11 +90,12 @@ class Player extends Entity
         }
         if(Input.pressed('player${id}_fire')) {
             shoot({
-                radius: 2,
+                radius: 6,
                 angle: getShotAngleInRadians(),
                 speed: SHOT_SPEED,
                 color: 0xFFF7AB,
-                collidesWithWalls: true
+                collidesWithWalls: true,
+                playerId: id
             });
         }
     }
@@ -192,11 +188,20 @@ class Player extends Entity
         //turretSprite.angle = turretAngle;
     }
 
-    //private function collisions() {
-        //if(collide("hazard", x, y) != null) {
-            //die();
-        //}
-    //}
+    private function collisions() {
+        var bullet = collide("bullet", x, y);
+        if(bullet != null) {
+            trace('ye');
+        }
+        if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id) {
+            trace('my id is ${id}. bullet is ${cast(bullet, Bullet).bulletOptions.playerId}');
+            die();
+        }
+    }
+
+    private function die() {
+        HXP.scene.remove(this);
+    }
 
     //private function explode() {
         //var numExplosions = 50;

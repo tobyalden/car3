@@ -10,13 +10,13 @@ import haxepunk.utils.*;
 import scenes.*;
 
 typedef BulletOptions = {
+    @:optional var playerId:Int;
     @:optional var width:Int;
     @:optional var height:Int;
     @:optional var radius:Int;
     var angle:Float;
     var speed:Float;
     @:optional var collidesWithWalls:Bool;
-    @:optional var bulletType:String;
     @:optional var callback:Bullet->Void;
     @:optional var callbackDelay:Float;
     @:optional var color:Int;
@@ -40,20 +40,21 @@ class Bullet extends Entity
     public var bulletOptions:BulletOptions;
 
     public function new(x:Float, y:Float, bulletOptions:BulletOptions) {
-        type = "hazard";
-        bulletOptions.collidesWithWalls = (
-            bulletOptions.collidesWithWalls == null ? false : bulletOptions.collidesWithWalls
-        );
         super(x - bulletOptions.radius, y - bulletOptions.radius);
         this.bulletOptions = bulletOptions;
         this.angle = bulletOptions.angle - Math.PI / 2;
         this.speed = bulletOptions.speed;
+        type = "bullet";
+        bulletOptions.collidesWithWalls = (
+            bulletOptions.collidesWithWalls == null ? false : bulletOptions.collidesWithWalls
+        );
         var color = bulletOptions.color == null ? 0xFFFFFF : bulletOptions.color;
         gravity = bulletOptions.gravity == null ? 0 : bulletOptions.gravity;
         accel = bulletOptions.accel == null ? 0 : bulletOptions.accel;
         tracking = bulletOptions.tracking == null ? 0 : bulletOptions.tracking;
         duration = bulletOptions.duration == null ? 999 : bulletOptions.duration;
-        mask = new Circle(bulletOptions.radius);
+        //mask = new Circle(bulletOptions.radius);
+        mask = new Hitbox(bulletOptions.radius * 2, bulletOptions.radius * 2);
         sprite = Image.createCircle(bulletOptions.radius, color);
         graphic = sprite;
         velocity = new Vector2();
@@ -103,6 +104,9 @@ class Bullet extends Entity
         }
         else {
             moveBy(velocity.x * HXP.elapsed, velocity.y * HXP.elapsed);
+        }
+        if(collide("player", x, y) != null) {
+            trace('d');
         }
         if(!collideRect(x, y, scene.camera.x, scene.camera.y, HXP.width, HXP.height)) {
             scene.remove(this);

@@ -36,6 +36,7 @@ class Main extends Engine
             Key.define('player${i}_left', [Key.A, Key.LEFT]);
             Key.define('player${i}_right', [Key.D, Key.RIGHT]);
             Key.define('player${i}_drift', [Key.Z, Key.SPACE]);
+            Key.define('player${i}_fire', [Key.X]);
         }
 
         if(Gamepad.gamepad(0) != null) {
