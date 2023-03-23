@@ -23,7 +23,7 @@ class Player extends Entity
     public static inline var SHOT_SPEED = 150;
     public static inline var MAX_SHOTS_ON_SCREEN = 3;
 
-    public static var sfx:Map<String, Sfx> = null;
+    private var sfx:Map<String, Sfx>;
 
     public var id(default, null):Int;
 
@@ -34,6 +34,7 @@ class Player extends Entity
     private var isDrifting:Bool;
     private var velocity:Vector2;
     private var driftTimer:Float;
+    private var isDead:Bool;
 
     private var turretAngle:Float;
     private var turretSprite:Image;
@@ -54,6 +55,7 @@ class Player extends Entity
         velocity = new Vector2();
         driftTimer = 0;
         isDrifting = false;
+        isDead = false;
 
         turretAngle = 0;
         turretSprite = new Image("graphics/turret.png");
@@ -64,20 +66,22 @@ class Player extends Entity
 
         graphic = new Graphiclist([sprite, turretSprite]);
 
-        if(sfx == null) {
-            sfx = [
-                "die" => new Sfx("audio/die.wav"),
-                "carloop" => new Sfx("audio/carloop.wav"),
-                "drift" => new Sfx("audio/drift.wav"),
-                "boost" => new Sfx("audio/boost.wav")
-            ];
-        }
+        sfx = [
+            "die" => new Sfx("audio/die.wav"),
+            "carloop" => new Sfx("audio/carloop.wav"),
+            "drift" => new Sfx("audio/drift.wav"),
+            "boost" => new Sfx("audio/boost.wav"),
+            "shoot" => new Sfx("audio/shoot.ogg"),
+            "turret" => new Sfx("audio/turret.wav")
+        ];
     }
 
     override public function update() {
-        movement();
-        collisions();
-        combat();
+        if(!isDead) {
+            movement();
+            collisions();
+            combat();
+        }
         animation();
         super.update();
     }
@@ -120,6 +124,7 @@ class Player extends Entity
         turretLength.rotate(getShotAngleInRadians());
         var bullet = new Bullet(centerX - turretLength.x, centerY - turretLength.y, bulletOptions);
         scene.add(bullet);
+        sfx["shoot"].play();
     }
 
     private function getShotAngleInRadians() {
@@ -197,54 +202,58 @@ class Player extends Entity
     }
 
     private function animation() {
+        visible = !isDead;
         sprite.play(isDrifting ? "drifting" : "idle");
         sprite.angle = angle;
         turretSprite.angle = angle + turretAngle;
-        //turretSprite.angle = turretAngle;
     }
 
     private function collisions() {
         var bullet = collide("bullet", x, y);
-        if(bullet != null) {
-            trace('ye');
-        }
         if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id) {
-            trace('my id is ${id}. bullet is ${cast(bullet, Bullet).bulletOptions.playerId}');
             die();
         }
     }
 
     private function die() {
-        HXP.scene.remove(this);
+        isDead = true;
+        sfx["die"].play();
+        explode();
+        HXP.alarm(2, function() {
+            var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints;
+            var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
+            moveTo(spawnPoint.x, spawnPoint.y);
+            isDead = false;
+        });
     }
 
-    //private function explode() {
-        //var numExplosions = 50;
-        //var directions = new Array<Vector2>();
-        //for(i in 0...numExplosions) {
-            //var angle = (2/numExplosions) * i;
-            //directions.push(new Vector2(Math.cos(angle), Math.sin(angle)));
-            //directions.push(new Vector2(-Math.cos(angle), Math.sin(angle)));
-            //directions.push(new Vector2(Math.cos(angle), -Math.sin(angle)));
-            //directions.push(new Vector2(-Math.cos(angle), -Math.sin(angle)));
-        //}
-        //var count = 0;
-        //for(direction in directions) {
-            //direction.scale(0.8 * Math.random());
-            //direction.normalize(
-                //Math.max(0.1 + 0.2 * Math.random(), direction.length)
-            //);
-            //var explosion = new Particle(
-                //centerX, centerY, directions[count], 1, 1
-            //);
-            //explosion.layer = -99;
-            //scene.add(explosion);
-            //count++;
-        //}
+    private function explode() {
+        var numExplosions = 50;
+        var directions = new Array<Vector2>();
+        for(i in 0...numExplosions) {
+            var angle = (2/numExplosions) * i;
+            directions.push(new Vector2(Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(Math.cos(angle), -Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), -Math.sin(angle)));
+        }
+        var count = 0;
+        for(direction in directions) {
+            direction.scale(0.8 * Math.random());
+            direction.normalize(
+                Math.max(0.1 + 0.2 * Math.random(), direction.length)
+            );
+            var explosion = new Particle(
+                centerX, centerY, directions[count], 1, 1
+            );
+            explosion.layer = -99;
+            scene.add(explosion);
+            count++;
+        }
 
-//#if desktop
-        //Sys.sleep(0.02);
-//#end
-        //scene.camera.shake(1, 4);
-    //}
+#if desktop
+        Sys.sleep(0.02);
+#end
+        scene.camera.shake(1, 4);
+    }
 }

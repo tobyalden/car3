@@ -10,6 +10,7 @@ import openfl.Assets;
 class Level extends Entity
 {
     public var entities(default, null):Array<Entity>;
+    public var spawnPoints(default, null):Array<Vector2>;
     private var walls:Grid;
     private var tiles:Tilemap;
 
@@ -41,10 +42,12 @@ class Level extends Entity
             else if(layer.name == "entities") {
                 // Load entities
                 entities = new Array<Entity>();
+                spawnPoints = new Array<Vector2>();
                 for(entityIndex in 0...layer.entities.length) {
                     var entity = layer.entities[entityIndex];
                     if(entity.name == "player") {
                         entities.push(new Player(entity.x, entity.y, entity.values.id));
+                        spawnPoints.push(new Vector2(entity.x, entity.y));
                     }
                 }
             }
@@ -59,7 +62,7 @@ class Level extends Entity
         for(tileX in 0...walls.columns) {
             for(tileY in 0...walls.rows) {
                 if(walls.getTile(tileX, tileY)) {
-                    tiles.setTile(tileX, tileY, 0);
+                    tiles.setTile(tileX, tileY, tileY * walls.columns + tileX);
                 }
             }
         }

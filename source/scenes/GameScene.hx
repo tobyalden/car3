@@ -14,8 +14,11 @@ import openfl.Assets;
 
 class GameScene extends Scene
 {
+    public var level(default, null):Level;
+
     override public function begin() {
-        var level = new Level("level");
+        addGraphic(new Image("graphics/background.png"), 100);
+        level = new Level("level");
         add(level);
         for(entity in level.entities) {
             add(entity);
