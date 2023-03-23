@@ -13,7 +13,7 @@ class Particle extends Entity
     private var velocity:Vector2;
 
     public function new(
-        x:Float, y:Float, velocity:Vector2, fadeTime:Float, scale:Float
+        x:Float, y:Float, velocity:Vector2, fadeTime:Float, scale:Float, color:Int = 0xFFFFFF
     ) {
 	    super(x, y);
         this.velocity = velocity;
@@ -27,6 +27,7 @@ class Particle extends Entity
         sprite.play("idle");
         sprite.centerOrigin();
         sprite.scale = scale;
+        sprite.color = color;
         var fadeTween = new MultiVarTween();
         fadeTween.tween(sprite, {"alpha": 0}, fadeTime);
         addTween(fadeTween, true);

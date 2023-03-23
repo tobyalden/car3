@@ -82,6 +82,7 @@ class Bullet extends Entity
 
     private function onCollision() {
         scene.remove(this);
+        explode();
     }
 
     override public function update() {
@@ -108,6 +109,31 @@ class Bullet extends Entity
             scene.remove(this);
         }
         super.update();
+    }
+
+    private function explode() {
+        var numExplosions = 3;
+        var directions = new Array<Vector2>();
+        for(i in 0...numExplosions) {
+            var angle = (2/numExplosions) * i;
+            directions.push(new Vector2(Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), Math.sin(angle)));
+            directions.push(new Vector2(Math.cos(angle), -Math.sin(angle)));
+            directions.push(new Vector2(-Math.cos(angle), -Math.sin(angle)));
+        }
+        var count = 0;
+        for(direction in directions) {
+            direction.scale(0.25 * Math.random());
+            direction.normalize(
+                Math.max(0.1 + 0.2 * Math.random(), direction.length)
+            );
+            var explosion = new Particle(
+                centerX, centerY, directions[count], 0.5, 0.5, bulletOptions.color
+            );
+            explosion.layer = -99;
+            scene.add(explosion);
+            count++;
+        }
     }
 }
 

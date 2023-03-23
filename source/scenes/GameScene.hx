@@ -26,8 +26,11 @@ class GameScene extends Scene
     private var message:Text;
     private var players:Array<Player>;
     private var gameStarted:Bool;
+    private var curtain:Curtain;
 
     override public function begin() {
+        curtain = new Curtain();
+        add(curtain);
         addGraphic(new Image("graphics/background.png"), 100);
         level = new Level("level");
         add(level);
@@ -54,6 +57,7 @@ class GameScene extends Scene
         addGraphic(message, -100);
         gameStarted = false;
         gameIsOver = false;
+        curtain.fadeOut(1);
     }
 
     private function startSequence() {
@@ -91,6 +95,9 @@ class GameScene extends Scene
             return;
         }
         gameIsOver = true;
+        HXP.alarm(5, function() {
+            curtain.fadeIn(1);
+        }, this);
         HXP.alarm(7, function() {
             HXP.scene = new GameScene();
         }, this);
