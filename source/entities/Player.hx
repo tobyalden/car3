@@ -14,6 +14,7 @@ class Player extends Entity
 {
     public static inline var ACCEL = 50 * 8 / 1.75;
     public static inline var MAX_SPEED = 100 * 2 / 1.75;
+    public static inline var MAX_REVERSE_SPEED = MAX_SPEED * 0.7;
     public static inline var TURN_SPEED = 100 * 3 / 1.75;
     public static inline var POST_DRIFT_BOOST = 3;
     public static inline var MAX_DRIFT_BOOST_DURATION = 1;
@@ -87,11 +88,13 @@ class Player extends Entity
     }
 
     private function combat() {
-        if(Input.check('player${id}_turret_left')) {
-            turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
+        if(Input.pressed('player${id}_turret_left')) {
+            //turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
+            turretAngle += 90;
         }
-        if(Input.check('player${id}_turret_right')) {
-            turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
+        if(Input.pressed('player${id}_turret_right')) {
+            //turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
+            turretAngle -= 90;
         }
         if(Input.pressed('player${id}_fire')) {
             if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN) {
@@ -159,20 +162,21 @@ class Player extends Entity
         }
 
         // Soft clamp speed
-        var maxSpeed = isDrifting ? MAX_SPEED * 1.25 : MAX_SPEED;
-        if(speed > MAX_SPEED) {
+        //var maxSpeed = isDrifting ? MAX_SPEED * 1.25 : MAX_SPEED;
+        var maxSpeed = Input.check('player${id}_reverse') ? MAX_REVERSE_SPEED : MAX_SPEED;
+        if(speed > maxSpeed) {
             speed = MathUtil.approach(
-                speed, MAX_SPEED, SOFT_CLAMP_APPROACH_SPEED * HXP.elapsed
+                speed, maxSpeed, SOFT_CLAMP_APPROACH_SPEED * HXP.elapsed
             );
         }
-        else if(speed < -MAX_SPEED) {
+        else if(speed < -maxSpeed) {
             speed = MathUtil.approach(
-                speed, -MAX_SPEED, SOFT_CLAMP_APPROACH_SPEED * HXP.elapsed
+                speed, -maxSpeed, SOFT_CLAMP_APPROACH_SPEED * HXP.elapsed
             );
         }
 
         // Hard clamp speed
-        var hardClamp = MAX_SPEED * POST_DRIFT_BOOST;
+        var hardClamp = maxSpeed * POST_DRIFT_BOOST;
         speed = MathUtil.clamp(speed, -hardClamp, hardClamp);
 
         var heading = new Vector2();
