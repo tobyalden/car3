@@ -31,6 +31,7 @@ class Player extends Entity
     private var sfx:Map<String, Sfx>;
 
     public var id(default, null):Int;
+    public var canMove:Bool;
 
     private var sprite:Spritemap;
     private var hitbox:Hitbox;
@@ -65,6 +66,7 @@ class Player extends Entity
         driftTimer = 0;
         isDrifting = false;
         isDead = false;
+        canMove = false;
 
         turretAngle = 0;
         turretSprite = new Image("graphics/turret.png");
@@ -97,7 +99,7 @@ class Player extends Entity
     }
 
     override public function update() {
-        if(!isDead) {
+        if(!isDead && canMove) {
             movement();
             collisions();
             combat();
@@ -262,16 +264,18 @@ class Player extends Entity
         }
     }
 
-    private function die() {
+    public function die() {
         isDead = true;
         carrying = null;
         sfx["die"].play();
         explode();
         HXP.alarm(2, function() {
-            var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
-            var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
-            moveTo(spawnPoint.x, spawnPoint.y);
-            isDead = false;
+            if(!cast(HXP.scene, GameScene).gameIsOver) {
+                var spawnPoints = cast(HXP.scene, GameScene).level.spawnPoints[getTeam()];
+                var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
+                moveTo(spawnPoint.x, spawnPoint.y);
+                isDead = false;
+            }
         });
     }
 
