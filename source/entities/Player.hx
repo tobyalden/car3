@@ -46,9 +46,10 @@ class Player extends Entity
 
     public var carrying(default, null):Flag;
 
-    public function new(x:Float, y:Float, id:Int) {
+    public function new(x:Float, y:Float, angle:Float, id:Int) {
         super(x, y);
         this.id = id;
+        this.angle = angle;
         name = "player";
         type = "player";
         sprite = new Spritemap('graphics/player${id}.png', 10, 16);
@@ -59,7 +60,6 @@ class Player extends Entity
         sprite.centerOrigin();
         hitbox = new Hitbox(10, 10, -5, -5);
         mask = hitbox;
-        angle = 0;
         speed = 0;
         velocity = new Vector2();
         driftTimer = 0;

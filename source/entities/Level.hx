@@ -18,11 +18,35 @@ class Level extends Entity
         super(0, 0);
         type = "walls";
         loadLevel(levelName);
+        mirrorHorizontally();
         updateGraphic();
     }
 
     override public function update() {
         super.update();
+    }
+
+    private function mirrorHorizontally() {
+        var halfColumns = Std.int(walls.columns / 2);
+        var flipVertically = Random.random < 0.5;
+        for(tileX in 0...halfColumns) {
+            for(tileY in 0...walls.rows) {
+                if(flipVertically) {
+                    walls.setTile(
+                        walls.columns - 1 - tileX,
+                        walls.rows - 1 - tileY,
+                        walls.getTile(tileX, tileY)
+                    );
+                }
+                else {
+                    walls.setTile(
+                        walls.columns - 1 - tileX,
+                        tileY,
+                        walls.getTile(tileX, tileY)
+                    );
+                }
+            }
+        }
     }
 
     private function loadLevel(levelName:String) {
@@ -49,7 +73,7 @@ class Level extends Entity
                 for(entityIndex in 0...layer.entities.length) {
                     var entity = layer.entities[entityIndex];
                     if(entity.name == "player") {
-                        var player = new Player(entity.x, entity.y, entity.values.id);
+                        var player = new Player(entity.x, entity.y, entity.values.angle, entity.values.id);
                         entities.push(player);
                         spawnPoints[player.getTeam()].push(new Vector2(entity.x, entity.y));
                     }
