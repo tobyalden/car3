@@ -150,6 +150,44 @@
       ],
       "texture": "../graphics/flag.png",
       "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAqSURBVDhPY/wPBAxkAiYoTRYY1UwioEgzAyieQQDKJQmMhjaJgALNDAwAkfkMEJNoJwAAAAAASUVORK5CYII="
+    },
+    {
+      "exportID": "59656930",
+      "name": "base",
+      "limit": -1,
+      "size": {"x": 10, "y": 10},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ffffff9f",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": true,
+      "resizeableY": true,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": [
+        {"name": "isRedTeam", "definition": "Boolean", "display": 0, "defaults": false}
+      ]
     }
   ],
   "tilesets": []

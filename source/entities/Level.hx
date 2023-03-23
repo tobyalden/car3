@@ -53,11 +53,17 @@ class Level extends Entity
                         entities.push(player);
                         spawnPoints[player.getTeam()].push(new Vector2(entity.x, entity.y));
                     }
-                    if(entity.name == "flag") {
-                        entities.push(new Flag(
-                            entity.x, entity.y,
+                    if(entity.name == "base") {
+                        var base = new Base(
+                            entity.x, entity.y, entity.width, entity.height,
                             entity.values.isRedTeam ? Player.RED_TEAM : Player.BLUE_TEAM
-                        ));
+                        );
+                        entities.push(base);
+
+                        // Spawn flag in base
+                        var flag = new Flag(base.centerX, base.centerY, base.team);
+                        flag.moveBy(-flag.width / 2, -flag.height / 2);
+                        entities.push(flag);
                     }
                     if(entity.name == "optionalSolid") {
                         if(Random.random < 0.5) {

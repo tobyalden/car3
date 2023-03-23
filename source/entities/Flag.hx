@@ -24,6 +24,16 @@ class Flag extends Entity
         graphic = sprite;
     }
 
+    public function reset() {
+        var bases = new Array<Entity>();
+        HXP.scene.getType("base", bases);
+        for(base in bases) {
+            if(cast(base, Base).team == team) {
+                moveTo(base.centerX - width / 2, base.centerY - height / 2);
+            }
+        }
+    }
+
     public function isCarried() {
         var players = new Array<Entity>();
         HXP.scene.getType("player", players);

@@ -240,9 +240,13 @@ class Player extends Entity
             flag != null
             && carrying == null
             && !cast(flag, Flag).isCarried()
-            && cast(flag, Flag).team != getTeam()
         ) {
-            carrying = flag;
+            if(cast(flag, Flag).team == getTeam()) {
+                cast(flag, Flag).reset();
+            }
+            else {
+                carrying = flag;
+            }
         }
         var bullet = collide("bullet", x, y);
         if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id) {
