@@ -53,8 +53,7 @@ class Bullet extends Entity
         accel = bulletOptions.accel == null ? 0 : bulletOptions.accel;
         tracking = bulletOptions.tracking == null ? 0 : bulletOptions.tracking;
         duration = bulletOptions.duration == null ? 999 : bulletOptions.duration;
-        //mask = new Circle(bulletOptions.radius);
-        mask = new Hitbox(bulletOptions.radius * 2, bulletOptions.radius * 2);
+        mask = new Circle(bulletOptions.radius);
         sprite = Image.createCircle(bulletOptions.radius, color);
         graphic = sprite;
         velocity = new Vector2();

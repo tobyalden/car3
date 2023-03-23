@@ -21,6 +21,7 @@ class Player extends Entity
 
     public static inline var TURRET_TURN_SPEED = 100 * 3 / 1.75;
     public static inline var SHOT_SPEED = 150;
+    public static inline var MAX_SHOTS_ON_SCREEN = 3;
 
     public static var sfx:Map<String, Sfx> = null;
 
@@ -89,15 +90,29 @@ class Player extends Entity
             turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
         }
         if(Input.pressed('player${id}_fire')) {
-            shoot({
-                radius: 6,
-                angle: getShotAngleInRadians(),
-                speed: SHOT_SPEED,
-                color: 0xFFF7AB,
-                collidesWithWalls: true,
-                playerId: id
-            });
+            if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN) {
+                shoot({
+                    radius: 6,
+                    angle: getShotAngleInRadians(),
+                    speed: SHOT_SPEED,
+                    color: 0xFFF7AB,
+                    collidesWithWalls: true,
+                    playerId: id
+                });
+            }
         }
+    }
+
+    private function shotsOnScreen() {
+        var shots:Array<Entity> = [];
+        HXP.scene.getType("bullet", shots);
+        var shotCount = 0;
+        for(shot in shots) {
+            if(cast(shot, Bullet).bulletOptions.playerId == id) {
+                shotCount++;
+            }
+        }
+        return shotCount;
     }
 
     private function shoot(bulletOptions:BulletOptions) {
