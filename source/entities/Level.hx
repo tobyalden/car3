@@ -70,6 +70,9 @@ class Level extends Entity
                     Player.RED_TEAM => [],
                     Player.BLUE_TEAM => []
                 ];
+                var solidsBag = [true, true, false, false];
+                HXP.shuffle(solidsBag);
+                var solidsCounter = 0;
                 for(entityIndex in 0...layer.entities.length) {
                     var entity = layer.entities[entityIndex];
                     if(entity.name == "player") {
@@ -90,7 +93,7 @@ class Level extends Entity
                         entities.push(flag);
                     }
                     if(entity.name == "optionalSolid") {
-                        if(Random.random < 0.5) {
+                        if(solidsBag[solidsCounter]) {
                             for(tileY in 0...Std.int(entity.height / walls.tileHeight)) {
                                 for(tileX in 0...Std.int(entity.width / walls.tileWidth)) {
                                     walls.setTile(
@@ -100,6 +103,11 @@ class Level extends Entity
                                     );
                                 }
                             }
+                        }
+                        solidsCounter += 1;
+                        if(solidsCounter >= solidsBag.length) {
+                            HXP.shuffle(solidsBag);
+                            solidsCounter = 0;
                         }
                     }
                 }

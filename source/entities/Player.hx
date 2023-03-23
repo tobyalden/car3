@@ -16,7 +16,7 @@ class Player extends Entity
     public static inline var BLUE_TEAM = 1;
 
     public static inline var ACCEL = 50 * 8 / 1.75;
-    public static inline var MAX_SPEED = 100 * 2 / 1.75;
+    public static inline var MAX_SPEED = 100;
     public static inline var MAX_REVERSE_SPEED = MAX_SPEED * 0.7;
     public static inline var TURN_SPEED = 100 * 3 / 1.75;
     public static inline var POST_DRIFT_BOOST = 3;
@@ -24,7 +24,7 @@ class Player extends Entity
     public static inline var SOFT_CLAMP_APPROACH_SPEED = ACCEL * 1.75;
 
     public static inline var TURRET_TURN_SPEED = 100 * 3 / 1.75;
-    public static inline var SHOT_SPEED = 150;
+    public static inline var SHOT_SPEED = 200;
     public static inline var MAX_SHOTS_ON_SCREEN = 3;
     public static inline var TURRET_TURN_INCREMENT = 90;
 
