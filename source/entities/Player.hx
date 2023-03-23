@@ -27,6 +27,7 @@ class Player extends Entity
     public static inline var SHOT_SPEED = 200;
     public static inline var MAX_SHOTS_ON_SCREEN = 3;
     public static inline var TURRET_TURN_INCREMENT = 90;
+    public static inline var INVINCIBLE_TIME_ON_RESPAWN = 2;
 
     private var sfx:Map<String, Sfx>;
 
@@ -41,6 +42,7 @@ class Player extends Entity
     private var velocity:Vector2;
     private var driftTimer:Float;
     private var isDead:Bool;
+    private var isInvincible:Bool;
 
     private var turretAngle:Float;
     private var turretSprite:Image;
@@ -66,6 +68,7 @@ class Player extends Entity
         driftTimer = 0;
         isDrifting = false;
         isDead = false;
+        isInvincible = false;
         canMove = false;
 
         turretAngle = 0;
@@ -230,7 +233,12 @@ class Player extends Entity
     }
 
     private function animation() {
-        visible = !isDead;
+        if(isInvincible) {
+            visible = !visible;
+        }
+        else {
+            visible = !isDead;
+        }
         sprite.play(isDrifting ? "drifting" : "idle");
         sprite.angle = angle;
         turretSprite.angle = angle + turretAngle;
@@ -259,13 +267,14 @@ class Player extends Entity
             }
         }
         var bullet = collide("bullet", x, y);
-        if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id) {
+        if(bullet != null && cast(bullet, Bullet).bulletOptions.playerId != id && !isInvincible) {
             die();
         }
     }
 
     public function die() {
         isDead = true;
+        canMove = false;
         carrying = null;
         sfx["die"].play();
         explode();
@@ -275,8 +284,15 @@ class Player extends Entity
                 var spawnPoint = spawnPoints[Random.randInt(spawnPoints.length)];
                 moveTo(spawnPoint.x, spawnPoint.y);
                 isDead = false;
+                isInvincible = true;
+                HXP.alarm(0.5, function() {
+                    canMove = true;
+                }, this);
+                HXP.alarm(INVINCIBLE_TIME_ON_RESPAWN, function() {
+                    isInvincible = false;
+                });
             }
-        });
+        }, this);
     }
 
     private function explode() {
