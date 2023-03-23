@@ -145,9 +145,11 @@
       "nodeDisplay": 0,
       "nodeGhost": true,
       "tags": [],
-      "values": [],
+      "values": [
+        {"name": "isRedTeam", "definition": "Boolean", "display": 2, "defaults": false}
+      ],
       "texture": "../graphics/flag.png",
-      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAjSURBVChTY2RgYPgPBEAKP2CC0gTBUFAIAoS9DAQD5kYGBgD7vgUNnxSRUgAAAABJRU5ErkJggg=="
+      "textureImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAqSURBVDhPY/wPBAxkAiYoTRYY1UwioEgzAyieQQDKJQmMhjaJgALNDAwAkfkMEJNoJwAAAAAASUVORK5CYII="
     }
   ],
   "tilesets": []

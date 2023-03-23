@@ -86,7 +86,16 @@
         },
         {"name": "optionalSolid", "id": 14, "_eid": "55656808", "x": 290.60416515890824, "y": 160.57080659191456, "width": 30, "height": 60, "originX": 0, "originY": 0},
         {"name": "optionalSolid", "id": 21, "_eid": "55656808", "x": -150, "y": -50, "width": 10, "height": 10, "originX": 0, "originY": 0},
-        {"name": "flag", "id": 22, "_eid": "55725654", "x": 590, "y": 50, "originX": 0, "originY": 0},
+        {
+          "name": "flag",
+          "id": 22,
+          "_eid": "55725654",
+          "x": 590,
+          "y": 50,
+          "originX": 0,
+          "originY": 0,
+          "values": {"isRedTeam": false}
+        },
         {
           "name": "player",
           "id": 23,
@@ -114,7 +123,16 @@
         {"name": "optionalSolid", "id": 34, "_eid": "55656808", "x": 260.60416515890824, "y": 160.57080659191456, "width": 30, "height": 60, "originX": 0, "originY": 0},
         {"name": "optionalSolid", "id": 35, "_eid": "55656808", "x": 60, "y": 160, "width": 80, "height": 60, "originX": 0, "originY": 0},
         {"name": "optionalSolid", "id": 36, "_eid": "55656808", "x": 140, "y": 160, "width": 30, "height": 60, "originX": 0, "originY": 0},
-        {"name": "flag", "id": 37, "_eid": "55725654", "x": 50, "y": 310, "originX": 0, "originY": 0}
+        {
+          "name": "flag",
+          "id": 37,
+          "_eid": "55725654",
+          "x": 50,
+          "y": 310,
+          "originX": 0,
+          "originY": 0,
+          "values": {"isRedTeam": true}
+        }
       ]
     }
   ]

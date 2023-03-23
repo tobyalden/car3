@@ -54,7 +54,10 @@ class Level extends Entity
                         spawnPoints[player.getTeam()].push(new Vector2(entity.x, entity.y));
                     }
                     if(entity.name == "flag") {
-                        entities.push(new Flag(entity.x, entity.y));
+                        entities.push(new Flag(
+                            entity.x, entity.y,
+                            entity.values.isRedTeam ? Player.RED_TEAM : Player.BLUE_TEAM
+                        ));
                     }
                     if(entity.name == "optionalSolid") {
                         if(Random.random < 0.5) {

@@ -236,7 +236,12 @@ class Player extends Entity
 
     private function collisions() {
         var flag = collide("flag", x, y);
-        if(flag != null && carrying == null && !cast(flag, Flag).isCarried()) {
+        if(
+            flag != null
+            && carrying == null
+            && !cast(flag, Flag).isCarried()
+            && cast(flag, Flag).team != getTeam()
+        ) {
             carrying = flag;
         }
         var bullet = collide("bullet", x, y);
