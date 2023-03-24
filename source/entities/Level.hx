@@ -70,7 +70,7 @@ class Level extends Entity
                     Player.RED_TEAM => [],
                     Player.BLUE_TEAM => []
                 ];
-                var solidsBag = [true, true, false, false];
+                var solidsBag = [true, true, false, false, HXP.choose(true, false)];
                 HXP.shuffle(solidsBag);
                 var solidsCounter = 0;
                 for(entityIndex in 0...layer.entities.length) {

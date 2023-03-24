@@ -37,10 +37,9 @@ class Main extends Engine
             Key.define('player${i}_right', [Key.D, Key.RIGHT]);
             //Key.define('player${i}_drift', [Key.Z, Key.SPACE]);
             Key.define('player${i}_fire', [Key.X]);
-        }
-
-        if(Gamepad.gamepad(0) != null) {
-            defineGamepadInputs(Gamepad.gamepad(0));
+            if(Gamepad.gamepad(i) != null) {
+                defineGamepadInputs(Gamepad.gamepad(i));
+            }
         }
 
         Gamepad.onConnect.bind(function(newGamepad:Gamepad) {
@@ -75,6 +74,9 @@ class Main extends Engine
         }
         if(Key.pressed(Key.ESCAPE)) {
             Sys.exit(0);
+        }
+        if(Key.pressed(Key.R)) {
+            HXP.scene = new GameScene();
         }
 #end
         super.update();

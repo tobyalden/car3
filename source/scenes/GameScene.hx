@@ -19,6 +19,9 @@ class GameScene extends Scene
     public static inline var GAME_HEIGHT = 360;
     public static inline var POINTS_TO_WIN = 3;
 
+    public static inline var MODE_CTF = 0;
+    public static inline var MODE_KOTH = 1;
+
     public static var sfx(default, null):Map<String, Sfx> = null;
 
     public var level(default, null):Level;
