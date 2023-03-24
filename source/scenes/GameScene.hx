@@ -34,7 +34,7 @@ class GameScene extends Scene
         curtain = new Curtain();
         add(curtain);
         addGraphic(new Image("graphics/background.png"), 100);
-        level = new Level("level");
+        level = new Level('level${HXP.choose(0, 1, 2)}');
         add(level);
         players = [];
         for(entity in level.entities) {

@@ -28,6 +28,7 @@ class Player extends Entity
     public static inline var MAX_SHOTS_ON_SCREEN = 3;
     public static inline var TURRET_TURN_INCREMENT = 90;
     public static inline var INVINCIBLE_TIME_ON_RESPAWN = 2;
+    public static inline var RESPAWN_TIME = 3;
 
     private var sfx:Map<String, Sfx>;
 
@@ -134,7 +135,7 @@ class Player extends Entity
             sfx["turret"].play(0.1);
         }
         if(Input.pressed('player${id}_fire')) {
-            if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN) {
+            if(shotsOnScreen() < MAX_SHOTS_ON_SCREEN && !isInvincible) {
                 shoot({
                     radius: 6,
                     angle: getShotAngleInRadians(),
@@ -294,7 +295,7 @@ class Player extends Entity
         sfx["die"].play();
         explode();
         stopSounds();
-        HXP.alarm(2, function() {
+        HXP.alarm(RESPAWN_TIME, function() {
             if(!cast(HXP.scene, GameScene).gameIsOver) {
                 respawn();
             }
