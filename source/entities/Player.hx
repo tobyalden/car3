@@ -125,12 +125,10 @@ class Player extends Entity
 
     private function combat() {
         if(Input.pressed('player${id}_turret_left')) {
-            //turretAngle += TURRET_TURN_SPEED * HXP.elapsed;
             turretAngle += TURRET_TURN_INCREMENT;
             sfx["turret"].play(0.1);
         }
         if(Input.pressed('player${id}_turret_right')) {
-            //turretAngle -= TURRET_TURN_SPEED * HXP.elapsed;
             turretAngle -= TURRET_TURN_INCREMENT;
             sfx["turret"].play(0.1);
         }
@@ -189,11 +187,18 @@ class Player extends Entity
         if(Input.check('player${id}_right')) {
             angle -= turnSpeed * HXP.elapsed;
         }
+        var accel:Float = ACCEL;
+        if(
+            speed > 0 && Input.check('player${id}_reverse') && !Input.check('player${id}_forward')
+            || speed < 0 && Input.check('player${id}_forward') && !Input.check('player${id}_backward')
+        ) {
+            accel *= 3;
+        }
         if(Input.check('player${id}_forward')) {
-            speed += ACCEL * HXP.elapsed;
+            speed += accel * HXP.elapsed;
         }
         else if(Input.check('player${id}_reverse')) {
-            speed -= ACCEL * HXP.elapsed;
+            speed -= accel * HXP.elapsed;
         }
         else {
             speed = MathUtil.approach(speed, 0, ACCEL * HXP.elapsed);
